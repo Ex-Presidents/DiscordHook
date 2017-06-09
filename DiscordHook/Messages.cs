@@ -29,7 +29,7 @@ namespace DiscordHook
             objEmbed.Add("author", objAuthor);
             arrEmbeds.Add(objEmbed);
 
-            obj.Add("username", Provider.serverName);
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
             obj.Add("tts", false);
             obj.Add("embeds", arrEmbeds);
 
@@ -49,7 +49,7 @@ namespace DiscordHook
                 objAuthor.Add("url", "http://steamcommunity.com/profiles/" + player.playerID.steamID.ToString());
             objAuthor.Add("icon_url", UnturnedPlayer.FromSteamPlayer(player).SteamProfile.AvatarFull.AbsoluteUri);
 
-            objFooter.Add("text", string.Format(DiscordHook.Instance.Translations.Instance["player_status_count"], Provider.clients.Count(a => a.player != null)));
+            objFooter.Add("text", string.Format(DiscordHook.Instance.Translations.Instance["player_status_count"], DiscordHook.Players));
 
             objEmbed.Add("title", DiscordHook.Instance.Translations.Instance["player_status_title"]);
             objEmbed.Add("description", message);
@@ -59,7 +59,7 @@ namespace DiscordHook
             objEmbed.Add("author", objAuthor);
             arrEmbeds.Add(objEmbed);
 
-            obj.Add("username", Provider.serverName);
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
             obj.Add("tts", false);
             obj.Add("embeds", arrEmbeds);
 
@@ -96,7 +96,7 @@ namespace DiscordHook
                 objEmbed.Add("fields", arrFields);
             arrEmbeds.Add(objEmbed);
 
-            obj.Add("username", Provider.serverName);
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
             obj.Add("tts", false);
             obj.Add("embeds", arrEmbeds);
 
@@ -125,7 +125,7 @@ namespace DiscordHook
             objEmbed.Add("author", objAuthor);
             arrEmbeds.Add(objEmbed);
 
-            obj.Add("username", Provider.serverName);
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
             obj.Add("tts", false);
             obj.Add("embeds", arrEmbeds);
 
@@ -154,7 +154,7 @@ namespace DiscordHook
             objEmbed.Add("author", objAuthor);
             arrEmbeds.Add(objEmbed);
 
-            obj.Add("username", Provider.serverName);
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
             obj.Add("tts", false);
             obj.Add("embeds", arrEmbeds);
 
@@ -192,7 +192,7 @@ namespace DiscordHook
             objEmbed.Add("fields", arrFields);
             arrEmbeds.Add(objEmbed);
 
-            obj.Add("username", Provider.serverName);
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
             obj.Add("tts", false);
             obj.Add("embeds", arrEmbeds);
 
