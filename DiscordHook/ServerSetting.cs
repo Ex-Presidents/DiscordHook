@@ -8,7 +8,9 @@ namespace DiscordHook
     public class ServerSetting
     {
         public string URL;
-        public bool SendChatMessages;
+        public bool SendGlobalMessages;
+        public bool SendLocalMessages;
+        public bool SendGroupMessages;
         public bool SendJoinLeave;
         public bool SendVoting;
         public bool SendLoadShutdown;
@@ -32,7 +34,9 @@ namespace DiscordHook
 
             ss.URL = "https://www.discordapp.com/";
 
-            ss.SendChatMessages = true;
+            ss.SendGlobalMessages = true;
+            ss.SendLocalMessages = false;
+            ss.SendGroupMessages = false;
             ss.SendJoinLeave = true;
             ss.SendVoting = true;
             ss.SendLoadShutdown = true;

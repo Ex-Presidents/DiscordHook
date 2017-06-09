@@ -243,7 +243,7 @@ namespace DiscordHook
                 title = Translations.Instance["player_chat"];
 
             foreach (ServerSetting bot in Configuration.Instance.Bots)
-                if (bot.SendChatMessages)
+                if ((mode == EChatMode.GLOBAL && bot.SendGlobalMessages) || (mode == EChatMode.GROUP && bot.SendGroupMessages) || (mode == EChatMode.LOCAL && bot.SendLocalMessages))
                     Sender.SendSingle(Messages.Generate_Chat(text, title, player, bot), bot);
         }
         #endregion
