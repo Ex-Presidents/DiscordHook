@@ -13,15 +13,6 @@ namespace DiscordHook
 {
     public static class Sender
     {
-        private static WebClient weebclient;
-
-        static Sender()
-        {
-            weebclient = new WebClient();
-            ServicePointManager.ServerCertificateValidationCallback = (o, certificate, chain, errors) => true;
-            weebclient.Headers[HttpRequestHeader.ContentType] = "application/json";
-        }
-
         public static JObject GenerateWebhook(string message, string username = null, string avatarURL = null, bool tts = false)
         {
             JObject obj = new JObject();
@@ -36,18 +27,33 @@ namespace DiscordHook
             return obj;
         }
 
-        public static bool Send(JObject WebHook)
+        public static bool SendSingle(JObject WebHook, ServerSetting bot)
         {
             try
             {
-                string returnData = weebclient.UploadString(DiscordHook.Instance.Configuration.Instance.URL, WebHook.ToString(Formatting.None));
+                using(WebClient weebClient = new WebClient())
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = (o, certificate, chain, errors) => true;
+                    weebClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+                    weebClient.UploadStringAsync(new Uri(bot.URL), WebHook.ToString(Formatting.None));
+                }
 
-                return string.IsNullOrEmpty(returnData);
+                return true;
             }
             catch (Exception ex)
             {
                 return false;
             }
+        }
+
+        public static bool[] Send(JObject WebHook)
+        {
+            bool[] Returns = new bool[DiscordHook.Instance.Configuration.Instance.Bots.Count];
+
+            for (int i = 0; i < Returns.Length; i++)
+                Returns[i] = SendSingle(WebHook, DiscordHook.Instance.Configuration.Instance.Bots[i]);
+
+            return Returns;
         }
     }
 }
