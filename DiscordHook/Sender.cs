@@ -29,6 +29,9 @@ namespace DiscordHook
 
         public static bool SendSingle(JObject WebHook, ServerSetting bot)
         {
+            if (WebHook == null)
+                return false;
+
             try
             {
                 using(WebClient weebClient = new WebClient())

@@ -13,6 +13,7 @@ namespace DiscordHook
         public bool SendVoting;
         public bool SendLoadShutdown;
         public bool SendCommands;
+        public bool SendDeaths;
         public bool LinkSenderProfile;
         public bool LinkServer;
         public string ServerLink;
@@ -23,18 +24,20 @@ namespace DiscordHook
         public string ColorVoting;
         public string ColorLoadShutdown;
         public string ColorCommands;
+        public string ColorDeath;
 
         public static ServerSetting Create()
         {
             ServerSetting ss = new ServerSetting();
 
-            ss.URL = "ENTER URL HERE";
+            ss.URL = "https://www.discordapp.com/";
 
             ss.SendChatMessages = true;
             ss.SendJoinLeave = true;
             ss.SendVoting = true;
             ss.SendLoadShutdown = true;
             ss.SendCommands = false;
+            ss.SendDeaths = true;
             ss.LinkSenderProfile = true;
             ss.LinkServer = false;
             ss.ServerLink = "https://www.google.com/";
@@ -45,6 +48,7 @@ namespace DiscordHook
             ss.ColorVoting = "FF0000";
             ss.ColorLoadShutdown = "00FFFF";
             ss.ColorCommands = "0000FF";
+            ss.ColorDeath = "BD00FF";
 
             return ss;
         }

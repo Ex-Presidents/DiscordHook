@@ -160,5 +160,43 @@ namespace DiscordHook
 
             return obj;
         }
+
+        public static JObject Generate_Death(string message, SteamPlayer victim, SteamPlayer killer, ServerSetting bot)
+        {
+            if (killer == null)
+                return null;
+
+            JObject obj = new JObject();
+            JArray arrEmbeds = new JArray();
+            JObject objEmbed = new JObject();
+            JObject objAuthor = new JObject();
+            JArray arrFields = new JArray();
+            JObject objKiller = new JObject();
+
+            objAuthor.Add("name", victim.playerID.playerName);
+            if (bot.LinkSenderProfile)
+                objAuthor.Add("url", "http://steamcommunity.com/profiles/" + victim.playerID.steamID.ToString());
+            objAuthor.Add("icon_url", UnturnedPlayer.FromSteamPlayer(victim).SteamProfile.AvatarFull.AbsoluteUri);
+
+            objKiller.Add("name", DiscordHook.Instance.Translations.Instance["player_death_killer"]);
+            objKiller.Add("value", string.Format(DiscordHook.Instance.Translations.Instance["player_death_killername"], killer.playerID.playerName) + "\n" +
+                string.Format(DiscordHook.Instance.Translations.Instance["player_death_killernick"], killer.playerID.nickName) + "\n" +
+                string.Format(DiscordHook.Instance.Translations.Instance["player_death_killer64"], killer.playerID.steamID));
+            objKiller.Add("inline", true);
+            arrFields.Add(objKiller);
+
+            objEmbed.Add("title", DiscordHook.Instance.Translations.Instance["player_death_title"]);
+            objEmbed.Add("description", message);
+            objEmbed.Add("color", int.Parse(bot.ColorDeath, NumberStyles.HexNumber));
+            objEmbed.Add("author", objAuthor);
+            objEmbed.Add("fields", arrFields);
+            arrEmbeds.Add(objEmbed);
+
+            obj.Add("username", Provider.serverName);
+            obj.Add("tts", false);
+            obj.Add("embeds", arrEmbeds);
+
+            return obj;
+        }
     }
 }

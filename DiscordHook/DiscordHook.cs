@@ -55,6 +55,24 @@ namespace DiscordHook
 
             { "player_nick", "Nickname: {0}" },
 
+            { "player_death_title", "Player Death Update" },
+            { "player_death", "Died of unknown causes" },
+            { "player_death_bleeding", "Died from bleeding" },
+            { "player_death_gun", "Died from getting shot" },
+            { "player_death_melee", "Died from getting beat" },
+            { "player_death_punched", "Died from getting punched" },
+            { "player_death_roadkill", "Died from being ran over" },
+            { "player_death_granade", "Died from granade" },
+            { "player_death_shred", "Died in pieces" },
+            { "player_death_landmine", "Died from not watching his step" },
+            { "player_death_missile", "Died from being shot by a missile" },
+            { "player_death_charge", "Died from getting too close to a charge" },
+            { "player_death_splash", "Splat and he is dead" },
+            { "player_death_killer", "Killer" },
+            { "player_death_killername", "Steam Name: {0}" },
+            { "player_death_killernick", "Nick Name: {0}" },
+            { "player_death_killer64", "Steam64: {0}" },
+
             { "vote_status_title", "Vote Status Update" },
             { "vote_status_data", "Vote Data" },
             { "vote_status_start", "Voting Started!" },
@@ -144,6 +162,44 @@ namespace DiscordHook
         #endregion
 
         #region Event Functions
+        private void OnPlayerDeath(Player player, byte damage, Vector3 force, EDeathCause death, ELimb limb, CSteamID killer)
+        {
+            if (!player.life.isDead)
+                return;
+            if(killer == null || killer == CSteamID.Nil)
+                return;
+            string cause;
+
+            if (death == EDeathCause.BLEEDING)
+                cause = Translations.Instance["player_death_bleeding"];
+            else if (death == EDeathCause.CHARGE)
+                cause = Translations.Instance["player_death_charge"];
+            else if (death == EDeathCause.GRENADE)
+                cause = Translations.Instance["player_death_granade"];
+            else if (death == EDeathCause.GUN)
+                cause = Translations.Instance["player_death_gun"];
+            else if (death == EDeathCause.LANDMINE)
+                cause = Translations.Instance["player_death_landmine"];
+            else if (death == EDeathCause.MELEE)
+                cause = Translations.Instance["player_death_melee"];
+            else if (death == EDeathCause.MISSILE)
+                cause = Translations.Instance["player_death_missile"];
+            else if (death == EDeathCause.PUNCH)
+                cause = Translations.Instance["player_death_punched"];
+            else if (death == EDeathCause.ROADKILL)
+                cause = Translations.Instance["player_death_roadkill"];
+            else if (death == EDeathCause.SHRED)
+                cause = Translations.Instance["player_death_shred"];
+            else if (death == EDeathCause.SPLASH)
+                cause = Translations.Instance["player_death_splash"];
+            else
+                cause = Translations.Instance["player_death"];
+
+            foreach (ServerSetting bot in Configuration.Instance.Bots)
+                if (bot.SendDeaths)
+                    Sender.SendSingle(Messages.Generate_Death(cause, player.channel.owner, Provider.clients.FirstOrDefault(a => a.playerID.steamID == killer), bot), bot);
+        }
+
         private void OnShutdown()
         {
             foreach (ServerSetting bot in Configuration.Instance.Bots)
@@ -156,6 +212,7 @@ namespace DiscordHook
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendJoinLeave)
                     Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
+            player.player.life.onHurt += new Hurt(OnPlayerDeath);
         }
 
         private void OnPlayerLeave(SteamPlayer player)
