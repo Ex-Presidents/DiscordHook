@@ -35,6 +35,8 @@ namespace DiscordHook
         #region Properties
         public static DiscordHook Instance { get; private set; }
 
+        public static int Players { get; private set; } = 0;
+
         public override TranslationList DefaultTranslations => new TranslationList()
         {
             { "server_status_title", "Server Status Update" },
@@ -209,6 +211,7 @@ namespace DiscordHook
 
         private void OnPlayerJoin(SteamPlayer player)
         {
+            Players++;
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendJoinLeave)
                     Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
@@ -217,6 +220,7 @@ namespace DiscordHook
 
         private void OnPlayerLeave(SteamPlayer player)
         {
+            Players--;
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendJoinLeave)
                     Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
