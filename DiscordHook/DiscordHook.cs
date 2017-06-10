@@ -96,6 +96,7 @@ namespace DiscordHook
         {
             if (Instance != null)
                 return;
+            Instance = this;
 
             fIsVoting = typeof(ChatManager).GetField("isVoting", BindingFlags.NonPublic | BindingFlags.Static);
             fVoteOrigin = typeof(ChatManager).GetField("voteOrigin", BindingFlags.NonPublic | BindingFlags.Static);
@@ -112,8 +113,6 @@ namespace DiscordHook
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendLoadShutdown)
                     Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_start"], bot), bot);
-
-            Instance = this;
         }
 
         #region Mono Functions
