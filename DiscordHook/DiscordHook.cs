@@ -93,7 +93,8 @@ namespace DiscordHook
 
         protected override void Load()
         {
-            Instance = this;
+            if (Instance != null)
+                return;
 
             fIsVoting = typeof(ChatManager).GetField("isVoting", BindingFlags.NonPublic | BindingFlags.Static);
             fVoteOrigin = typeof(ChatManager).GetField("voteOrigin", BindingFlags.NonPublic | BindingFlags.Static);
@@ -110,6 +111,8 @@ namespace DiscordHook
             foreach(ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendLoadShutdown)
                     Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_start"], bot), bot);
+
+            Instance = this;
         }
 
         #region Mono Functions
@@ -166,6 +169,10 @@ namespace DiscordHook
         #region Event Functions
         private void OnPlayerDeath(Player player, byte damage, Vector3 force, EDeathCause death, ELimb limb, CSteamID killer)
         {
+            if (player == null)
+                return;
+            if (player.life == null)
+                return;
             if (!player.life.isDead)
                 return;
             if(killer == null || killer == CSteamID.Nil)
@@ -211,6 +218,13 @@ namespace DiscordHook
 
         private void OnPlayerJoin(SteamPlayer player)
         {
+            if (player == null)
+                return;
+            if (player.player == null)
+                return;
+            if (player.playerID == null)
+                return;
+
             Players++;
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendJoinLeave)
@@ -220,6 +234,13 @@ namespace DiscordHook
 
         private void OnPlayerLeave(SteamPlayer player)
         {
+            if (player == null)
+                return;
+            if (player.player == null)
+                return;
+            if (player.playerID == null)
+                return;
+
             Players--;
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendJoinLeave)
@@ -228,7 +249,14 @@ namespace DiscordHook
 
         private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, string text, ref bool visible)
         {
-            if(text.StartsWith("/") || text.StartsWith("@"))
+            if (player == null)
+                return;
+            if (player.player == null)
+                return;
+            if (player.playerID == null)
+                return;
+
+            if (text.StartsWith("/") || text.StartsWith("@"))
             {
                 foreach (ServerSetting bot in Configuration.Instance.Bots)
                     if (bot.SendCommands)
