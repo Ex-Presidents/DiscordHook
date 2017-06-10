@@ -21,6 +21,8 @@ namespace DiscordHook
         private bool Voting = false;
         private int VotesYes = 0;
         private int VotesNo = 0;
+
+        private Dictionary<SteamPlayer, Hurt> ShitCollecter = new Dictionary<SteamPlayer, Hurt>();
         #endregion
 
         #region Fields
@@ -241,47 +243,38 @@ namespace DiscordHook
 
         private void OnPlayerJoin(SteamPlayer player)
         {
-            try
-            {
-                if (player == null)
-                    return;
-                if (player.player == null)
-                    return;
-                if (player.playerID == null)
-                    return;
+            if (player == null)
+                return;
+            if (player.player == null)
+                return;
+            if (player.playerID == null)
+                return;
+            ShitCollecter.Add(player, new Hurt(OnPlayerDeath));
 
-                Players++;
-                foreach (ServerSetting bot in Configuration.Instance.Bots)
-                    if (bot.SendJoinLeave)
-                        Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
-                player.player.life.onHurt += new Hurt(OnPlayerDeath);
-            }
-            catch (Exception ex)
-            {
-                // Fuck you I don't care anymore
-            }
+            Players++;
+            foreach (ServerSetting bot in Configuration.Instance.Bots)
+                if (bot.SendJoinLeave)
+                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
+            player.player.life.onHurt += ShitCollecter[player];
         }
 
         private void OnPlayerLeave(SteamPlayer player)
         {
-            try
-            {
-                if (player == null)
-                    return;
-                if (player.player == null)
-                    return;
-                if (player.playerID == null)
-                    return;
+            if (player == null)
+                return;
+            if (!ShitCollecter.ContainsKey(player))
+                return;
+            if (player.player == null)
+                return;
+            if (player.playerID == null)
+                return;
+            player.player.life.onHurt -= ShitCollecter[player];
+            ShitCollecter.Remove(player);
 
-                Players--;
-                foreach (ServerSetting bot in Configuration.Instance.Bots)
-                    if (bot.SendJoinLeave)
-                        Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
-            }
-            catch(Exception ex)
-            {
-                // Fuck you I don't care anymore
-            }
+            Players--;
+            foreach (ServerSetting bot in Configuration.Instance.Bots)
+                if (bot.SendJoinLeave)
+                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
         }
 
         private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, string text, ref bool visible)
