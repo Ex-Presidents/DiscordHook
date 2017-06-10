@@ -243,12 +243,6 @@ namespace DiscordHook
 
         private void OnPlayerJoin(SteamPlayer player)
         {
-            if (player == null)
-                return;
-            if (player.player == null)
-                return;
-            if (player.playerID == null)
-                return;
             ShitCollecter.Add(player, new Hurt(OnPlayerDeath));
 
             Players++;
@@ -260,13 +254,7 @@ namespace DiscordHook
 
         private void OnPlayerLeave(SteamPlayer player)
         {
-            if (player == null)
-                return;
             if (!ShitCollecter.ContainsKey(player))
-                return;
-            if (player.player == null)
-                return;
-            if (player.playerID == null)
                 return;
             player.player.life.onHurt -= ShitCollecter[player];
             ShitCollecter.Remove(player);
@@ -279,13 +267,6 @@ namespace DiscordHook
 
         private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, string text, ref bool visible)
         {
-            if (player == null)
-                return;
-            if (player.player == null)
-                return;
-            if (player.playerID == null)
-                return;
-
             if (text.StartsWith("/") || text.StartsWith("@"))
             {
                 foreach (ServerSetting bot in Configuration.Instance.Bots)
