@@ -88,7 +88,7 @@ namespace DiscordHook
             { "vote_status_votedno", "Player voted NO!" },
             { "vote_status_votedyes", "Player voted YES!" },
             { "vote_status_update", "Voting Information" },
-            { "abuse", "{0} killed {1} while {2} was enabled. "}
+            { "abuse", "{0} was enabled during kill"}
         };
         #endregion
 
@@ -181,9 +181,9 @@ namespace DiscordHook
             string cause;
 
             if (Killer.VanishMode)
-                cause = Instance.Translate("abuse", Killer.CharacterName, UnturnedPlayer.FromPlayer(player).CharacterName, "vanish");
+                cause = Instance.Translate("abuse", "vanish");
             else if (Killer.GodMode)
-                cause = Instance.Translate("abuse", Killer.CharacterName, UnturnedPlayer.FromPlayer(player).CharacterName, "god");
+                cause = Instance.Translate("abuse", "god");
             else
             {
                 switch (death)
@@ -241,33 +241,47 @@ namespace DiscordHook
 
         private void OnPlayerJoin(SteamPlayer player)
         {
-            if (player == null)
-                return;
-            if (player.player == null)
-                return;
-            if (player.playerID == null)
-                return;
+            try
+            {
+                if (player == null)
+                    return;
+                if (player.player == null)
+                    return;
+                if (player.playerID == null)
+                    return;
 
-            Players++;
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
-                if (bot.SendJoinLeave)
-                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
-            player.player.life.onHurt += new Hurt(OnPlayerDeath);
+                Players++;
+                foreach (ServerSetting bot in Configuration.Instance.Bots)
+                    if (bot.SendJoinLeave)
+                        Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
+                player.player.life.onHurt += new Hurt(OnPlayerDeath);
+            }
+            catch (Exception ex)
+            {
+                // Fuck you I don't care anymore
+            }
         }
 
         private void OnPlayerLeave(SteamPlayer player)
         {
-            if (player == null)
-                return;
-            if (player.player == null)
-                return;
-            if (player.playerID == null)
-                return;
+            try
+            {
+                if (player == null)
+                    return;
+                if (player.player == null)
+                    return;
+                if (player.playerID == null)
+                    return;
 
-            Players--;
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
-                if (bot.SendJoinLeave)
-                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
+                Players--;
+                foreach (ServerSetting bot in Configuration.Instance.Bots)
+                    if (bot.SendJoinLeave)
+                        Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
+            }
+            catch(Exception ex)
+            {
+                // Fuck you I don't care anymore
+            }
         }
 
         private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, string text, ref bool visible)
