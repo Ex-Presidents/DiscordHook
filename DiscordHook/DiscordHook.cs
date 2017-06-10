@@ -87,7 +87,8 @@ namespace DiscordHook
             { "vote_status_target", "Voted: {0}" },
             { "vote_status_votedno", "Player voted NO!" },
             { "vote_status_votedyes", "Player voted YES!" },
-            { "vote_status_update", "Voting Information" }
+            { "vote_status_update", "Voting Information" },
+            { "abuse", "{0} killed {1} while {2} was enabled. "}
         };
         #endregion
 
@@ -108,7 +109,7 @@ namespace DiscordHook
             Provider.onServerShutdown += new Provider.ServerShutdown(OnShutdown);
             ChatManager.onChatted += new Chatted(OnPlayerChat);
 
-            foreach(ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendLoadShutdown)
                     Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_start"], bot), bot);
 
@@ -127,7 +128,7 @@ namespace DiscordHook
             CSteamID voteOrigin = (CSteamID)fVoteOrigin.GetValue(null);
             CSteamID voteTarget = (CSteamID)fVoteTarget.GetValue(null);
 
-            if(!isVoting && isVoting == Voting)
+            if (!isVoting && isVoting == Voting)
             {
                 Voting = false;
                 VotesYes = 0;
@@ -154,9 +155,9 @@ namespace DiscordHook
                                 Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_fail"], false, 0, 0, 0, "", "", bot), bot);
                         }
                     }
-                    if(votesYes != VotesYes)
+                    if (votesYes != VotesYes)
                         Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_votedyes"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
-                    if(votesNo != VotesNo)
+                    if (votesNo != VotesNo)
                         Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_votedno"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
                 }
             }
@@ -175,38 +176,61 @@ namespace DiscordHook
                 return;
             if (!player.life.isDead)
                 return;
-            if(killer == null || killer == CSteamID.Nil)
+            if (killer == null || killer == CSteamID.Nil)
                 return;
+            UnturnedPlayer Killer = UnturnedPlayer.FromCSteamID(killer);
             string cause;
 
-            if (death == EDeathCause.BLEEDING)
-                cause = Translations.Instance["player_death_bleeding"];
-            else if (death == EDeathCause.CHARGE)
-                cause = Translations.Instance["player_death_charge"];
-            else if (death == EDeathCause.GRENADE)
-                cause = Translations.Instance["player_death_granade"];
-            else if (death == EDeathCause.GUN)
-                cause = Translations.Instance["player_death_gun"];
-            else if (death == EDeathCause.LANDMINE)
-                cause = Translations.Instance["player_death_landmine"];
-            else if (death == EDeathCause.MELEE)
-                cause = Translations.Instance["player_death_melee"];
-            else if (death == EDeathCause.MISSILE)
-                cause = Translations.Instance["player_death_missile"];
-            else if (death == EDeathCause.PUNCH)
-                cause = Translations.Instance["player_death_punched"];
-            else if (death == EDeathCause.ROADKILL)
-                cause = Translations.Instance["player_death_roadkill"];
-            else if (death == EDeathCause.SHRED)
-                cause = Translations.Instance["player_death_shred"];
-            else if (death == EDeathCause.SPLASH)
-                cause = Translations.Instance["player_death_splash"];
+            if (Killer.VanishMode)
+                cause = Instance.Translate("abuse", Killer.CharacterName, UnturnedPlayer.FromPlayer(player).CharacterName, "vanish");
+            else if (Killer.GodMode)
+                cause = Instance.Translate("abuse", Killer.CharacterName, UnturnedPlayer.FromPlayer(player).CharacterName, "god");
             else
-                cause = Translations.Instance["player_death"];
+            {
+                switch (death)
+                {
+                    case EDeathCause.BLEEDING:
+                        cause = Translations.Instance["player_death_bleeding"];
+                        break;
+                    case EDeathCause.CHARGE:
+                        cause = Translations.Instance["player_death_charge"];
+                        break;
+                    case EDeathCause.GRENADE:
+                        cause = Translations.Instance["player_death_granade"];
+                        break;
+                    case EDeathCause.GUN:
+                        cause = Translations.Instance["player_death_gun"];
+                        break;
+                    case EDeathCause.LANDMINE:
+                        cause = Translations.Instance["player_death_landmine"];
+                        break;
+                    case EDeathCause.MELEE:
+                        cause = Translations.Instance["player_death_melee"];
+                        break;
+                    case EDeathCause.MISSILE:
+                        cause = Translations.Instance["player_death_missile"];
+                        break;
+                    case EDeathCause.PUNCH:
+                        cause = Translations.Instance["player_death_punched"];
+                        break;
+                    case EDeathCause.ROADKILL:
+                        cause = Translations.Instance["player_death_roadkill"];
+                        break;
+                    case EDeathCause.SHRED:
+                        cause = Translations.Instance["player_death_shred"];
+                        break;
+                    case EDeathCause.SPLASH:
+                        cause = Translations.Instance["player_death_splash"];
+                        break;
+                    default:
+                        cause = Translations.Instance["player_death"];
+                        break;
+                }
+            }
 
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
-                if (bot.SendDeaths)
-                    Sender.SendSingle(Messages.Generate_Death(cause, player.channel.owner, Provider.clients.FirstOrDefault(a => a.playerID.steamID == killer), bot), bot);
+            for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
+                if (Instance.Configuration.Instance.Bots[i].SendDeaths)
+                    Sender.SendSingle(Messages.Generate_Death(cause, player.channel.owner, Provider.clients.FirstOrDefault(a => a.playerID.steamID == killer), Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
         }
 
         private void OnShutdown()

@@ -20,7 +20,7 @@ namespace DiscordHook
         public bool LinkServer;
         public string ServerLink;
         public bool ShowPlayerCount;
-
+        public bool ShowPotentialAbuse;
         public string ColorChat;
         public string ColorJoinLeave;
         public string ColorVoting;
@@ -34,6 +34,7 @@ namespace DiscordHook
 
             ss.URL = "https://www.discordapp.com/";
 
+            ss.ShowPotentialAbuse = true;
             ss.SendGlobalMessages = true;
             ss.SendLocalMessages = false;
             ss.SendGroupMessages = false;
