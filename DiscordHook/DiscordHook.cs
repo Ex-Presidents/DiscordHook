@@ -336,6 +336,11 @@ namespace DiscordHook
 
         private void OnExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel)
         {
+            if (player == null)
+                return;
+            if(!(player is UnturnedPlayer))
+                return;
+
             UnturnedPlayer ply = (UnturnedPlayer)player;
 
             if(command is CommandTp)
