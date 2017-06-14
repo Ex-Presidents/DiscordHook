@@ -13,6 +13,7 @@ namespace DiscordHook
         [XmlArrayItem(ElementName = "Bot")]
         public List<ServerSetting> Bots;
         public string ServerName;
+        public int AbuseTeleportKillTimeoutSeconds;
 
         public void LoadDefaults()
         {
@@ -21,6 +22,7 @@ namespace DiscordHook
                 ServerSetting.Create()
             };
             ServerName = Provider.serverName;
+            AbuseTeleportKillTimeoutSeconds = 5;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace DiscordHook
 
             objEmbed.Add("title", DiscordHook.Instance.Translations.Instance["server_status_title"]);
             objEmbed.Add("description", message);
-            objEmbed.Add("color", int.Parse(bot.ColorLoadShutdown, NumberStyles.HexNumber));
+            objEmbed.Add("color", int.Parse(bot.ColorServerStatus, NumberStyles.HexNumber));
             objEmbed.Add("author", objAuthor);
             arrEmbeds.Add(objEmbed);
 
@@ -190,6 +190,72 @@ namespace DiscordHook
             objEmbed.Add("color", int.Parse(bot.ColorDeath, NumberStyles.HexNumber));
             objEmbed.Add("author", objAuthor);
             objEmbed.Add("fields", arrFields);
+            arrEmbeds.Add(objEmbed);
+
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
+            obj.Add("tts", false);
+            obj.Add("embeds", arrEmbeds);
+
+            return obj;
+        }
+
+        public static JObject Generate_AbuseKill(string message, SteamPlayer admin, SteamPlayer victim, ServerSetting bot)
+        {
+            if (admin == null || victim == null)
+                return null;
+
+            JObject obj = new JObject();
+            JArray arrEmbeds = new JArray();
+            JObject objEmbed = new JObject();
+            JObject objAuthor = new JObject();
+            JArray arrFields = new JArray();
+            JObject objVictim = new JObject();
+
+            objAuthor.Add("name", admin.playerID.playerName);
+            if (bot.LinkSenderProfile)
+                objAuthor.Add("url", "http://steamcommunity.com/profiles/" + admin.playerID.steamID.ToString());
+            objAuthor.Add("icon_url", UnturnedPlayer.FromSteamPlayer(admin).SteamProfile.AvatarFull.AbsoluteUri);
+
+            objVictim.Add("name", DiscordHook.Instance.Translations.Instance["abuse_kill_victim"]);
+            objVictim.Add("value", string.Format(DiscordHook.Instance.Translations.Instance["abuse_kill_victimname"], victim.playerID.playerName) + "\n" +
+                string.Format(DiscordHook.Instance.Translations.Instance["abuse_kill_victimnick"], victim.playerID.nickName) + "\n" +
+                string.Format(DiscordHook.Instance.Translations.Instance["abuse_kill_victim64"], victim.playerID.steamID));
+            objVictim.Add("inline", true);
+            arrFields.Add(objVictim);
+
+            objEmbed.Add("title", DiscordHook.Instance.Translations.Instance["abuse_title"]);
+            objEmbed.Add("description", message);
+            objEmbed.Add("color", int.Parse(bot.ColorAbuse, NumberStyles.HexNumber));
+            objEmbed.Add("author", objAuthor);
+            objEmbed.Add("fields", arrFields);
+            arrEmbeds.Add(objEmbed);
+
+            obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
+            obj.Add("tts", false);
+            obj.Add("embeds", arrEmbeds);
+
+            return obj;
+        }
+
+        public static JObject Generate_Abuse(string message, SteamPlayer admin, ServerSetting bot)
+        {
+            if (admin == null)
+                return null;
+
+            JObject obj = new JObject();
+            JArray arrEmbeds = new JArray();
+            JObject objEmbed = new JObject();
+            JObject objAuthor = new JObject();
+
+            objAuthor.Add("name", admin.playerID.playerName);
+            if (bot.LinkSenderProfile)
+                objAuthor.Add("url", "http://steamcommunity.com/profiles/" + admin.playerID.steamID.ToString());
+            objAuthor.Add("icon_url", UnturnedPlayer.FromSteamPlayer(admin).SteamProfile.AvatarFull.AbsoluteUri);
+
+            objEmbed.Add("title", DiscordHook.Instance.Translations.Instance["abuse_title"]);
+            objEmbed.Add("description", message);
+            objEmbed.Add("color", int.Parse(bot.ColorAbuse, NumberStyles.HexNumber));
+            objEmbed.Add("author", objAuthor);
             arrEmbeds.Add(objEmbed);
 
             obj.Add("username", DiscordHook.Instance.Configuration.Instance.ServerName);
