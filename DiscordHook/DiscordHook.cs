@@ -211,25 +211,29 @@ namespace DiscordHook
             UnturnedPlayer Killer = UnturnedPlayer.FromCSteamID(killer);
             string cause;
 
-            if (Killer.VanishMode)
+            try
             {
-                for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                    if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
-                        Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_vanish"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                if (Killer.VanishMode)
+                {
+                    for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
+                        if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
+                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_vanish"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                }
+                else if (Killer.GodMode)
+                {
+                    for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
+                        if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
+                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_godmode"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                }
+                else if (NoTP.ContainsKey(Killer.SteamPlayer()))
+                {
+                    for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
+                        if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
+                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_teleport"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                    NoTP.Remove(Killer.SteamPlayer());
+                }
             }
-            else if (Killer.GodMode)
-            {
-                for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                    if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
-                        Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_godmode"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
-            }
-            else if (NoTP.ContainsKey(Killer.SteamPlayer()))
-            {
-                for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                    if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
-                        Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_teleport"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
-                NoTP.Remove(Killer.SteamPlayer());
-            }
+            catch(Exception ex) { }
 
             switch (death)
             {
