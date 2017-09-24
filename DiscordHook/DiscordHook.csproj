@@ -43,18 +43,6 @@
       <HintPath>..\Libraries\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Rocket.API">
-      <HintPath>..\Libraries\Rocket.API.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Rocket.Core">
-      <HintPath>..\Libraries\Rocket.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Rocket.Unturned">
-      <HintPath>..\Libraries\Rocket.Unturned.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -70,9 +58,15 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="DiscordHook.cs" />
     <Compile Include="Messages.cs" />
+    <Compile Include="Modulator\API\TranslationList.cs" />
+    <Compile Include="Modulator\Data\XMLData.cs" />
+    <Compile Include="Modulator\ModulatorContants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender.cs" />
     <Compile Include="ServerSetting.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modulator\Unturned\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -3,24 +3,15 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Rocket.API.Collections;
-using Rocket.Core.Plugins;
+using Modulator.API;
 using SDG.Unturned;
+using SDG.Framework.Modules;
 using Steamworks;
-using Rocket.Unturned.Events;
-using Rocket.Unturned.Player;
-using Rocket.Unturned;
-using Logger = Rocket.Core.Logging.Logger;
 using UnityEngine;
-using Rocket.Core.Commands;
-using Rocket.Core;
-using Rocket.API;
-using Rocket.Unturned.Commands;
-using Rocket.Unturned.Permissions;
 
 namespace DiscordHook
 {
-    public class DiscordHook : RocketPlugin<Configuration>
+    public class DiscordHook : IModuleNexus
     {
         #region Variables
         private bool Voting = false;
@@ -45,7 +36,7 @@ namespace DiscordHook
 
         public static int Players { get; private set; } = 0;
 
-        public override TranslationList DefaultTranslations => new TranslationList()
+        public TranslationList Translations => new TranslationList()
         {
             { "server_status_title", "Server Status Update" },
             { "server_status_start", "Server Started!" },
@@ -111,7 +102,7 @@ namespace DiscordHook
         };
         #endregion
 
-        protected override void Load()
+        public void initialize()
         {
             if (Instance != null)
                 return;
@@ -134,6 +125,11 @@ namespace DiscordHook
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if (bot.SendLoadShutdown)
                     Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_start"], bot), bot);
+        }
+
+        public void shutdown()
+        {
+
         }
 
         #region Mono Functions
