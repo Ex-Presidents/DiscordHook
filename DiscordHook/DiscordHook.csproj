@@ -58,9 +58,12 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="DiscordHook.cs" />
     <Compile Include="Messages.cs" />
+    <Compile Include="Modulator\API\Configuration.cs" />
     <Compile Include="Modulator\API\TranslationList.cs" />
     <Compile Include="Modulator\Data\XMLData.cs" />
+    <Compile Include="Modulator\Interfaces\IConfiguration.cs" />
     <Compile Include="Modulator\ModulatorContants.cs" />
+    <Compile Include="Modulator\ModulatorMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender.cs" />
     <Compile Include="ServerSetting.cs" />

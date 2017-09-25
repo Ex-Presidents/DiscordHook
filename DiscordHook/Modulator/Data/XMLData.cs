@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Collections;
 using System.Linq;
 
@@ -66,6 +68,40 @@ namespace Modulator.Data
 
             return MakeXPath(doc, node, rest);
         }
+
+        public static string Serialize(object instance)
+        {
+            XmlSerializer serializer = new XmlSerializer(instance.GetType());
+
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, instance);
+                return writer.ToString();
+            }
+        }
+        public static string Serialize<T>()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            T instance = Activator.CreateInstance<T>();
+
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, instance);
+                return writer.ToString();
+            }
+        }
+
+        public static object Deserialize(string xml, Type type)
+        {
+            XmlSerializer serializer = new XmlSerializer(type);
+            object instance = null;
+
+            using (StringReader reader = new StringReader(xml))
+                instance = serializer.Deserialize(reader);
+
+            return instance;
+        }
+        public static T Deserialize<T>(string xml) => (T)Deserialize(xml, typeof(T));
         #endregion
 
         #region Functions

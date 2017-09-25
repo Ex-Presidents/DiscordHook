@@ -122,9 +122,9 @@ namespace DiscordHook
             LevelManager.onArenaMessageUpdated += new ArenaMessageUpdated(OnArenaMessage);
             R.Commands.OnExecuteCommand += new RocketCommandManager.ExecuteCommand(OnExecuteCommand);
 
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                 if (bot.SendLoadShutdown)
-                    Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_start"], bot), bot);
+                    Sender.SendSingle(Messages.Generate_ServerStatus(Translations["server_status_start"], bot), bot);
         }
 
         public void shutdown()
@@ -137,7 +137,7 @@ namespace DiscordHook
         {
             List<SteamPlayer> remove = new List<SteamPlayer>();
             foreach (SteamPlayer player in NoTP.Keys)
-                if ((DateTime.Now - NoTP[player]).TotalSeconds >= Configuration.Instance.AbuseTeleportKillTimeoutSeconds)
+                if ((DateTime.Now - NoTP[player]).TotalSeconds >= Configuration<Configuration>.Instance.AbuseTeleportKillTimeoutSeconds)
                     remove.Add(player);
             while(remove.Count > 0)
             {
@@ -162,7 +162,7 @@ namespace DiscordHook
                 return;
             }
 
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
             {
                 if (bot.SendVoting)
                 {
@@ -170,21 +170,21 @@ namespace DiscordHook
                     {
                         if (isVoting)
                         {
-                            Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_start"], false, 0, 0, 0, "", "", bot), bot);
-                            Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_update"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
+                            Sender.SendSingle(Messages.Generate_VoteStatus(Translations["vote_status_start"], false, 0, 0, 0, "", "", bot), bot);
+                            Sender.SendSingle(Messages.Generate_VoteStatus(Translations["vote_status_update"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
                         }
                         else
                         {
                             if (votesYes >= votesNeeded)
-                                Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_success"], false, 0, 0, 0, "", "", bot), bot);
+                                Sender.SendSingle(Messages.Generate_VoteStatus(Translations["vote_status_success"], false, 0, 0, 0, "", "", bot), bot);
                             else
-                                Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_fail"], false, 0, 0, 0, "", "", bot), bot);
+                                Sender.SendSingle(Messages.Generate_VoteStatus(Translations["vote_status_fail"], false, 0, 0, 0, "", "", bot), bot);
                         }
                     }
                     if (votesYes != VotesYes)
-                        Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_votedyes"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
+                        Sender.SendSingle(Messages.Generate_VoteStatus(Translations["vote_status_votedyes"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
                     if (votesNo != VotesNo)
-                        Sender.SendSingle(Messages.Generate_VoteStatus(Translations.Instance["vote_status_votedno"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
+                        Sender.SendSingle(Messages.Generate_VoteStatus(Translations["vote_status_votedno"], true, votesYes, votesNo, votesNeeded, Provider.clients.First(a => a.playerID.steamID == voteOrigin).playerID.playerName, Provider.clients.First(a => a.playerID.steamID == voteTarget).playerID.playerName, bot), bot);
                 }
             }
             Voting = isVoting;
@@ -211,21 +211,21 @@ namespace DiscordHook
             {
                 if (Killer.VanishMode)
                 {
-                    for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                        if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
-                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_vanish"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                    for (int i = 0; i < Configuration<Configuration>.Instance.Bots.Count; i++)
+                        if (Configuration<Configuration>.Instance.Bots[i].SendPotentialAbuse)
+                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations["abuse_vanish"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Configuration<Configuration>.Instance.Bots[i]), Configuration<Configuration>.Instance.Bots[i]);
                 }
                 else if (Killer.GodMode)
                 {
-                    for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                        if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
-                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_godmode"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                    for (int i = 0; i < Configuration<Configuration>.Instance.Bots.Count; i++)
+                        if (Configuration<Configuration>.Instance.Bots[i].SendPotentialAbuse)
+                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations["abuse_godmode"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Configuration<Configuration>.Instance.Bots[i]), Configuration<Configuration>.Instance.Bots[i]);
                 }
                 else if (NoTP.ContainsKey(Killer.SteamPlayer()))
                 {
-                    for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                        if (Instance.Configuration.Instance.Bots[i].SendPotentialAbuse)
-                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations.Instance["abuse_teleport"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+                    for (int i = 0; i < Configuration<Configuration>.Instance.Bots.Count; i++)
+                        if (Configuration<Configuration>.Instance.Bots[i].SendPotentialAbuse)
+                            Sender.SendSingle(Messages.Generate_AbuseKill(Translations["abuse_teleport"], UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), player.channel.owner, Configuration<Configuration>.Instance.Bots[i]), Configuration<Configuration>.Instance.Bots[i]);
                     NoTP.Remove(Killer.SteamPlayer());
                 }
             }
@@ -234,53 +234,53 @@ namespace DiscordHook
             switch (death)
             {
                 case EDeathCause.BLEEDING:
-                    cause = Translations.Instance["player_death_bleeding"];
+                    cause = Translations["player_death_bleeding"];
                     break;
                 case EDeathCause.CHARGE:
-                    cause = Translations.Instance["player_death_charge"];
+                    cause = Translations["player_death_charge"];
                     break;
                 case EDeathCause.GRENADE:
-                    cause = Translations.Instance["player_death_granade"];
+                    cause = Translations["player_death_granade"];
                     break;
                 case EDeathCause.GUN:
-                    cause = Translations.Instance["player_death_gun"];
+                    cause = Translations["player_death_gun"];
                     break;
                 case EDeathCause.LANDMINE:
-                    cause = Translations.Instance["player_death_landmine"];
+                    cause = Translations["player_death_landmine"];
                     break;
                 case EDeathCause.MELEE:
-                    cause = Translations.Instance["player_death_melee"];
+                    cause = Translations["player_death_melee"];
                     break;
                 case EDeathCause.MISSILE:
-                    cause = Translations.Instance["player_death_missile"];
+                    cause = Translations["player_death_missile"];
                     break;
                 case EDeathCause.PUNCH:
-                    cause = Translations.Instance["player_death_punched"];
+                    cause = Translations["player_death_punched"];
                     break;
                 case EDeathCause.ROADKILL:
-                    cause = Translations.Instance["player_death_roadkill"];
+                    cause = Translations["player_death_roadkill"];
                     break;
                 case EDeathCause.SHRED:
-                    cause = Translations.Instance["player_death_shred"];
+                    cause = Translations["player_death_shred"];
                     break;
                 case EDeathCause.SPLASH:
-                    cause = Translations.Instance["player_death_splash"];
+                    cause = Translations["player_death_splash"];
                     break;
                 default:
-                    cause = Translations.Instance["player_death"];
+                    cause = Translations["player_death"];
                     break;
             }
 
-            for (int i = 0; i < Instance.Configuration.Instance.Bots.Count; i++)
-                if (Instance.Configuration.Instance.Bots[i].SendDeaths)
-                    Sender.SendSingle(Messages.Generate_Death(cause, player.channel.owner, UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), Instance.Configuration.Instance.Bots[i]), Instance.Configuration.Instance.Bots[i]);
+            for (int i = 0; i < Configuration<Configuration>.Instance.Bots.Count; i++)
+                if (Configuration<Configuration>.Instance.Bots[i].SendDeaths)
+                    Sender.SendSingle(Messages.Generate_Death(cause, player.channel.owner, UnturnedPlayer.FromCSteamID(killer).SteamPlayer(), Configuration<Configuration>.Instance.Bots[i]), Configuration<Configuration>.Instance.Bots[i]);
         }
 
         private void OnShutdown()
         {
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                 if (bot.SendLoadShutdown)
-                    Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_stop"], bot), bot);
+                    Sender.SendSingle(Messages.Generate_ServerStatus(Translations["server_status_stop"], bot), bot);
         }
 
         private void OnPlayerJoin(SteamPlayer player)
@@ -288,9 +288,9 @@ namespace DiscordHook
             ShitCollecter.Add(player, new Hurt(OnPlayerDeath));
 
             Players++;
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                 if (bot.SendJoinLeave)
-                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_join"], player, bot), bot);
+                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations["player_status_join"], player, bot), bot);
             player.player.life.onHurt += ShitCollecter[player];
         }
 
@@ -302,9 +302,9 @@ namespace DiscordHook
             ShitCollecter.Remove(player);
 
             Players--;
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                 if (bot.SendJoinLeave)
-                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
+                    Sender.SendSingle(Messages.Generate_PlayerStatus(Translations["player_status_leave"], player, bot), bot);
         }
 
         private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, string text, ref bool visible)
@@ -313,7 +313,7 @@ namespace DiscordHook
             {
                 if (UnturnedPlayer.FromSteamPlayer(player).HasPermission("discordhook.nocommandlog"))
                     return;
-                foreach (ServerSetting bot in Configuration.Instance.Bots)
+                foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                     if (bot.SendCommands)
                         Sender.SendSingle(Messages.Generate_Command(text, player, bot), bot);
                 return;
@@ -321,15 +321,15 @@ namespace DiscordHook
             string title;
 
             if (mode == EChatMode.GLOBAL)
-                title = Translations.Instance["player_chat_global"];
+                title = Translations["player_chat_global"];
             else if (mode == EChatMode.GROUP)
-                title = Translations.Instance["player_chat_group"];
+                title = Translations["player_chat_group"];
             else if (mode == EChatMode.LOCAL)
-                title = Translations.Instance["player_chat_local"];
+                title = Translations["player_chat_local"];
             else
-                title = Translations.Instance["player_chat"];
+                title = Translations["player_chat"];
 
-            foreach (ServerSetting bot in Configuration.Instance.Bots)
+            foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                 if ((mode == EChatMode.GLOBAL && bot.SendGlobalMessages) || (mode == EChatMode.GROUP && bot.SendGroupMessages) || (mode == EChatMode.LOCAL && bot.SendLocalMessages))
                     Sender.SendSingle(Messages.Generate_Chat(text, title, player, bot), bot);
         }
@@ -351,15 +351,15 @@ namespace DiscordHook
         {
             if(message == EArenaMessage.PLAY)
             {
-                foreach (ServerSetting bot in Configuration.Instance.Bots)
+                foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                     if (bot.SendArenaUpdates)
-                        Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_arena_start"], bot), bot);
+                        Sender.SendSingle(Messages.Generate_ServerStatus(Translations["server_status_arena_start"], bot), bot);
             }
             else if(message == EArenaMessage.WIN || message == EArenaMessage.LOSE)
             {
-                foreach (ServerSetting bot in Configuration.Instance.Bots)
+                foreach (ServerSetting bot in Configuration<Configuration>.Instance.Bots)
                     if (bot.SendArenaUpdates)
-                        Sender.SendSingle(Messages.Generate_ServerStatus(Translations.Instance["server_status_arena_stop"], bot), bot);
+                        Sender.SendSingle(Messages.Generate_ServerStatus(Translations["server_status_arena_stop"], bot), bot);
             }
         }
         #endregion

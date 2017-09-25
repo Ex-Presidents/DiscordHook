@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Rocket.API;
+using Modulator.Interfaces;
 using System.Xml.Serialization;
 using SDG.Unturned;
 
 namespace DiscordHook
 {
-    public class Configuration : IRocketPluginConfiguration
+    public class Configuration : IConfiguration
     {
         [XmlArrayItem(ElementName = "Bot")]
         public List<ServerSetting> Bots;
