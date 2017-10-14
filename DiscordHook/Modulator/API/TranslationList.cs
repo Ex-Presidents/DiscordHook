@@ -80,6 +80,8 @@ namespace Modulator.API
         }
 
         public string Translate(string key, params object[] values) => string.Format(this[key], values);
+
+        public void Save() => XML.Save();
         #endregion
     }
 }
