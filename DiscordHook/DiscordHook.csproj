@@ -69,7 +69,13 @@
     <Compile Include="ServerSetting.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Modulator\Controls\Modulator\" />
+    <Folder Include="Modulator\Controls\PointBlank\" />
+    <Folder Include="Modulator\Controls\Rocket\" />
     <Folder Include="Modulator\Unturned\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
