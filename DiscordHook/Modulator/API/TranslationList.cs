@@ -78,7 +78,9 @@ namespace Modulator.API
             foreach(KeyValuePair<string, string> kvp in this)
                 array.SetValue(kvp, i++);
         }
+        #endregion
 
+        #region Functions
         public string Translate(string key, params object[] values) => string.Format(this[key], values);
 
         public void Save() => XML.Save();

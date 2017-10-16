@@ -60,6 +60,8 @@
     <Compile Include="Modulator\Interfaces\IConfiguration.cs" />
     <Compile Include="Modulator\ModulatorContants.cs" />
     <Compile Include="Modulator\ModulatorMemory.cs" />
+    <Compile Include="Modulator\Unturned\Commands\CommandManager.cs" />
+    <Compile Include="Modulator\Unturned\Commands\UnturnedCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender.cs" />
     <Compile Include="ServerSetting.cs" />
@@ -67,7 +69,6 @@
   <ItemGroup>
     <Folder Include="Modulator\Controls\PointBlank\" />
     <Folder Include="Modulator\Controls\Rocket\" />
-    <Folder Include="Modulator\Unturned\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
