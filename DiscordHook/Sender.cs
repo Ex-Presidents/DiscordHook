@@ -43,10 +43,7 @@ namespace DiscordHook
 
                 return true;
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            catch (Exception){ return false; }
         }
 
         public static bool[] Send(JObject WebHook)
