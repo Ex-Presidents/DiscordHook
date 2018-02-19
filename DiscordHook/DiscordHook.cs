@@ -311,7 +311,7 @@ namespace DiscordHook
                     Sender.SendSingle(Messages.Generate_PlayerStatus(Translations.Instance["player_status_leave"], player, bot), bot);
         }
 
-        private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, string text, ref bool visible)
+        private void OnPlayerChat(SteamPlayer player, EChatMode mode, ref Color color, ref bool rich, string text, ref bool visible)
         {
             if (text.StartsWith("/") || text.StartsWith("@"))
             {
@@ -324,14 +324,22 @@ namespace DiscordHook
             }
             string title;
 
-            if (mode == EChatMode.GLOBAL)
-                title = Translations.Instance["player_chat_global"];
-            else if (mode == EChatMode.GROUP)
-                title = Translations.Instance["player_chat_group"];
-            else if (mode == EChatMode.LOCAL)
-                title = Translations.Instance["player_chat_local"];
-            else
-                title = Translations.Instance["player_chat"];
+            switch (mode)
+            {
+                case EChatMode.GLOBAL:
+                    title = Translations.Instance["player_chat_global"];
+                    break;
+                case EChatMode.GROUP:
+                    title = Translations.Instance["player_chat_group"];
+                    break;
+                case EChatMode.LOCAL:
+                    title = Translations.Instance["player_chat_local"];
+                    break;
+                default:
+                    title = Translations.Instance["player_chat"];
+                    break;
+
+            }       
 
             foreach (ServerSetting bot in Configuration.Instance.Bots)
                 if ((mode == EChatMode.GLOBAL && bot.SendGlobalMessages) || (mode == EChatMode.GROUP && bot.SendGroupMessages) || (mode == EChatMode.LOCAL && bot.SendLocalMessages))
