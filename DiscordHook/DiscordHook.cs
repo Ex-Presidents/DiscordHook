@@ -233,7 +233,7 @@ namespace DiscordHook
                     NoTP.Remove(Killer.SteamPlayer());
                 }
             }
-            catch(Exception ex) { }
+            catch(Exception) { }
 
             switch (death)
             {
@@ -338,7 +338,6 @@ namespace DiscordHook
                 default:
                     title = Translations.Instance["player_chat"];
                     break;
-
             }       
 
             foreach (ServerSetting bot in Configuration.Instance.Bots)
